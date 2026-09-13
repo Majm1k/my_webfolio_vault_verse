@@ -1,0 +1,282 @@
+/* ============================================================
+   sections.css — раскладка семи секций
+   ============================================================ */
+
+/* ---------- Шапка ---------- */
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-header);
+  background-color: rgba(0, 0, 0, 0.72);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  color: var(--c-text-inv);
+}
+
+.header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--header-h);
+}
+
+.header__list {
+  display: flex;
+  align-items: center;
+  gap: 37px;
+}
+
+.header__link {
+  font-size: var(--fs-nav);
+  letter-spacing: 0;
+  font-weight: var(--fw-regular);
+  color: var(--c-text-inv-muted);
+  white-space: nowrap;
+  /* .globalnav-link: color .32s cubic-bezier(.4, 0, .6, 1) */
+  transition:
+    color var(--dur-nav) var(--ease-main),
+    opacity var(--dur-press) var(--ease-main);
+}
+
+.header__link:active {
+  opacity: 0.6;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .header__link:hover {
+    color: var(--c-text-inv);
+  }
+}
+
+@media (max-width: 734px) {
+  .header__inner {
+    justify-content: flex-start;
+  }
+
+  .header__list {
+    gap: var(--space-5);
+  }
+
+  .header__nav {
+    width: 100%;
+    margin-inline: calc(var(--gutter) * -1);
+    padding-inline: var(--gutter);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .header__nav::-webkit-scrollbar {
+    display: none;
+  }
+
+}
+
+/* ---------- Общее для секций ---------- */
+
+.section {
+  padding-top: var(--section-pad-top);
+  padding-bottom: var(--section-pad-bottom);
+}
+
+.section--principles {
+  padding-top: calc(var(--section-pad-top) * 0.72);
+  padding-bottom: calc(var(--section-pad-bottom) * 0.64);
+}
+
+.section--faq {
+  padding-bottom: calc(var(--section-pad-bottom) * 1.3);
+}
+
+.section--light {
+  background-color: var(--c-surface-light);
+  color: var(--c-text);
+}
+
+.section--dark {
+  background-color: var(--c-surface-dark);
+  color: var(--c-text-inv);
+}
+
+.section--black {
+  background-color: var(--c-black);
+  color: var(--c-text-inv);
+}
+
+.section--footer {
+  background-color: var(--c-footer);
+  color: var(--c-text-inv);
+  padding-top: calc(var(--section-pad-top) * 0.79);
+}
+
+.section--white {
+  background-color: var(--c-white);
+  color: var(--c-text);
+}
+
+.section__head {
+  margin-bottom: var(--section-gap);
+}
+
+.section__title {
+  text-wrap: balance;
+}
+
+
+/* ============================================================
+   S1 — Hero
+   ============================================================ */
+
+.hero {
+  background-color: var(--c-black);
+  color: var(--c-text-inv);
+  padding-bottom: 94px;
+  overflow: hidden;
+}
+
+/* Имя и подпись по центру. Лента скринов с первого экрана убрана,
+   поэтому верхний отступ считается от шапки, а не от неё. */
+.hero__body {
+  margin-top: 0;
+  padding-block: clamp(96px, 18vh, 200px) 0;
+  text-align: center;
+}
+
+.hero__title {
+  text-wrap: balance;
+}
+
+
+.hero__lead {
+  margin-top: var(--space-4);
+  color: var(--c-text-inv-muted);
+  /* Строка лида набрана с ручными переносами под левый край.
+     По центру они дают рваную лесенку, поэтому ширина ограничивается,
+     а переносы отдаются браузеру — см. .lead-br ниже. */
+  max-width: 62ch;
+  margin-inline: auto;
+}
+
+/* Ручные переносы лида были подогнаны под левый край. По центру они
+   дают рваную лесенку, поэтому выключены: текст тот же, переносится
+   сам в пределах 62ch. В разметке оставлены — вернуть одну строку. */
+.lead-br {
+  display: none;
+}
+
+.hero__lead strong {
+  color: var(--c-text-inv);
+  font-weight: var(--fw-semibold);
+}
+
+/* ============================================================
+   S5 — Принципы
+   ============================================================ */
+
+.principles {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-10);
+}
+
+.principle {
+  flex: 0 1 auto;
+  max-width: 400px;
+}
+
+.principle__num {
+  font-weight: var(--fw-semibold);
+  text-transform: none;
+}
+
+.principle__num--1 { color: var(--c-num-1); }
+.principle__num--2 { color: var(--c-num-2); }
+.principle__num--3 { color: var(--c-num-3); }
+
+.principle__title {
+  margin-top: var(--space-5);
+}
+
+.principle__text {
+  margin-top: var(--space-3);
+  color: var(--c-text-muted);
+  max-width: 30ch;
+}
+
+@media (max-width: 1068px) {
+  .principles {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-8);
+  }
+
+  .principle {
+    max-width: none;
+  }
+
+  .principle__title br {
+    display: none;
+  }
+}
+
+@media (max-width: 734px) {
+  .principles {
+    grid-template-columns: 1fr;
+    gap: var(--space-10);
+  }
+}
+
+/* ============================================================
+   S6 — FAQ
+   ============================================================ */
+
+.faq__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-8);
+}
+
+.faq__head {
+  margin-bottom: 62px;
+}
+
+.faq__head .section__title {
+  max-width: 22ch;
+}
+
+
+.faq {
+  max-width: none;
+}
+
+/* ============================================================
+   S7 — Футер
+   ============================================================ */
+
+.footer__title {
+  max-width: none;
+}
+
+.footer__links {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-top: var(--space-12);
+}
+
+@media (max-width: 1068px) {
+  .footer__links {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 734px) {
+  .footer__links {
+    grid-template-columns: 1fr;
+  }
+
+  .ctl {
+    height: 64px;
+  }
+}

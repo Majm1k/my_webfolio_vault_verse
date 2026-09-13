@@ -1,0 +1,1135 @@
+/* ============================================================
+   components.css — карточки, карусели, кнопки, аккордеон, оверлей
+   ============================================================ */
+
+/* ---------- Ссылка «к содержанию» ---------- */
+
+.skip-link {
+  position: absolute;
+  top: var(--space-2);
+  left: var(--space-2);
+  z-index: calc(var(--z-overlay) + 1);
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-button);
+  background-color: var(--c-white);
+  color: var(--c-text);
+  font-weight: var(--fw-semibold);
+  transform: translateY(-200%);
+}
+
+.skip-link:focus-visible {
+  transform: translateY(0);
+}
+
+/* ---------- Иконки ---------- */
+
+.icon {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.icon--sm {
+  width: 14px;
+  height: 14px;
+}
+
+/* ---------- Круглая кнопка ---------- */
+
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--card-btn);
+  height: var(--card-btn);
+  flex: 0 0 auto;
+  border-radius: var(--radius-round);
+  background-color: var(--c-control);
+  color: var(--c-text);
+}
+
+.icon-btn--on-dark {
+  background-color: var(--c-control-inv);
+  color: var(--c-text-inv);
+}
+
+/* .tile-button из overview.built.css: 36px, круг,
+   background-color 100ms linear, свой набор состояний на каждую тему */
+.icon-btn--solid,
+.icon-btn--solid-inv {
+  transition: background-color var(--dur-instant) linear;
+}
+
+.icon-btn--solid {
+  background-color: var(--tile-btn-bg);
+  color: var(--tile-btn-icon);
+}
+
+.icon-btn--solid-inv {
+  background-color: var(--tile-btn-bg-inv);
+  color: var(--tile-btn-icon-inv);
+}
+
+.fact:active .icon-btn--solid,
+.story:active .icon-btn--solid {
+  background-color: var(--tile-btn-bg-active);
+}
+
+.story:active .icon-btn--solid-inv {
+  background-color: var(--tile-btn-bg-inv-active);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .fact:hover .icon-btn--solid,
+  .story:hover .icon-btn--solid {
+    background-color: var(--tile-btn-bg-hover);
+  }
+
+  .story:hover .icon-btn--solid-inv {
+    background-color: var(--tile-btn-bg-inv-hover);
+  }
+}
+
+.icon-btn[disabled] {
+  opacity: 0.45;
+  cursor: default;
+}
+
+button.icon-btn {
+  transition:
+    background-color var(--dur-base) var(--ease-main),
+    opacity var(--dur-instant) linear,
+    transform var(--dur-press) var(--ease-main);
+}
+
+button.icon-btn:not([disabled]):active {
+  transform: scale(0.95);
+}
+
+
+
+/* ---------- Текстовая ссылка ---------- */
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-weight: var(--fw-semibold);
+}
+
+.link .icon {
+  stroke-width: 2.2;
+  transition: transform var(--dur-base) var(--ease-main);
+}
+
+/* ---------- Чип-тег ---------- */
+
+.chip {
+  display: inline-block;
+  padding: 5px var(--space-3);
+  border-radius: var(--radius-chip);
+  background-color: var(--c-chip);
+  color: var(--c-text-inv);
+  font-size: var(--fs-small);
+  line-height: var(--lh-small);
+  letter-spacing: -0.005em;
+  font-weight: var(--fw-regular);
+  text-transform: none;
+}
+
+/* ============================================================
+   Карусель — общая для трёх блоков
+   ============================================================ */
+
+.carousel {
+  position: relative;
+  /* Флексом, чтобы отрицательные поля трека не схлопывались
+     с отступом стрелок: в потоке они бы съели зазор целиком */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Раскладка .scroll-gallery из overview.built.css:
+   вертикальные поля дают место подъёму по ховеру (10px)
+   и сдвигу появления (30px), отрицательные внешние их гасят —
+   иначе у трека появилась бы вертикальная прокрутка. */
+.carousel__track {
+  display: flex;
+  align-items: stretch;
+  gap: var(--card-gap);
+  padding: 10px var(--rail) var(--reveal-translate-y);
+  margin: -10px 0 calc(var(--reveal-translate-y) * -1);
+  overflow-x: scroll;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--rail);
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.carousel__track::-webkit-scrollbar {
+  display: none;
+}
+
+.carousel__item {
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+  display: flex;
+}
+
+.carousel__item:last-child {
+  scroll-snap-align: start end;
+}
+
+.carousel__nav {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--arrow-gap);
+  /* Трек уводит себя вверх на высоту сдвига появления —
+     зазор до стрелок считается уже от нижнего края карточек */
+  margin-top: var(--arrows-gap);
+  padding-inline: var(--rail);
+  /* Нижние 30px трека — это его padding под сдвиг появления, и они
+     ложатся поверх стрелок. Трек прокручиваемый, клик забирал себе он.
+     Поднимаем стрелки над ним: зазор до них теперь можно менять,
+     не рискуя разом отключить кнопки. */
+  position: relative;
+  z-index: 1;
+}
+
+/* .paddlenav из overview.built.css: диаметр 36, три состояния фона,
+   переход 100ms linear, выключенная — прозрачность 0.42 */
+.carousel__arrow {
+  width: var(--arrow-size);
+  height: var(--arrow-size);
+  background-color: var(--paddle-bg);
+  color: var(--paddle-arrow);
+  transition:
+    background-color var(--dur-instant) linear,
+    color var(--dur-instant) linear,
+    opacity var(--dur-instant) linear;
+}
+
+.carousel__arrow[disabled] {
+  opacity: var(--disabled-opacity);
+  pointer-events: none;
+}
+
+.carousel__arrow:active {
+  background-color: var(--paddle-bg-active);
+  color: var(--paddle-arrow-hover);
+}
+
+.icon-btn--on-dark.carousel__arrow {
+  background-color: var(--paddle-bg-dark);
+  color: var(--paddle-arrow-dark);
+}
+
+.icon-btn--on-dark.carousel__arrow:active {
+  background-color: var(--paddle-bg-dark-active);
+  color: var(--paddle-arrow-dark-hover);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .carousel__arrow:hover {
+    background-color: var(--paddle-bg-hover);
+    color: var(--paddle-arrow-hover);
+  }
+
+  .icon-btn--on-dark.carousel__arrow:hover {
+    background-color: var(--paddle-bg-dark-hover);
+    color: var(--paddle-arrow-dark-hover);
+  }
+}
+
+.carousel__arrow .icon {
+  width: 16px;
+  height: 16px;
+  stroke-width: 2;
+}
+
+/* .scroll-gallery-paddlenav: transition: opacity .2s ease-out */
+.carousel__nav {
+  transition: opacity var(--dur-paddlenav) ease-out;
+}
+
+/* Без JS стрелки бесполезны — остаётся нативная прокрутка */
+html:not(.js) .carousel__nav,
+[data-carousel-static] .carousel__nav {
+  display: none;
+}
+
+/* ============================================================
+   Карточка-факт — переворот на месте
+   ============================================================ */
+
+.fact {
+  width: var(--fact-w);
+  perspective: 1600px;
+  /* Ховер живёт на обёртке, переворот — на внутреннем слое.
+     Иначе подъём под курсором тянулся бы 440ms вместо 300. */
+  transition: transform var(--dur-hover) var(--ease-card);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .fact:hover {
+    transform: scale(var(--card-scale));
+  }
+}
+
+.fact:active {
+  transform: scale(0.995);
+}
+
+.fact__inner {
+  position: relative;
+  display: grid;
+  width: 100%;
+  min-height: var(--fact-h);
+  transform-style: preserve-3d;
+  transition: transform var(--dur-flip) var(--ease-main);
+}
+
+.fact__face {
+  position: relative;
+  grid-area: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  padding: var(--card-pad);
+  border-radius: var(--radius-card);
+  background-color: var(--c-card-dark);
+  color: var(--c-text-inv);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.fact__face--back {
+  transform: rotateY(180deg);
+}
+
+.js .fact[data-flipped] .fact__inner {
+  transform: rotateY(180deg);
+}
+
+/* Ховер и переворот — разные взаимодействия, кривые не смешиваем:
+   масштаб идёт по ховерной, поворот по основной. Общий transition
+   выше покрывает оба, потому что свойство одно. */
+
+.fact__eyebrow {
+  color: var(--c-text-inv);
+}
+
+.fact__title {
+  margin-top: var(--space-5);
+  max-width: var(--fact-title-w);
+}
+
+.fact__text {
+  overflow-y: auto;
+}
+
+.fact__btn {
+  margin-top: auto;
+  align-self: flex-end;
+  margin-right: calc(var(--card-btn-inset) - var(--card-pad));
+  margin-bottom: calc(var(--card-btn-inset) - var(--card-pad));
+}
+
+.fact__btn .icon {
+  width: 15px;
+  height: 15px;
+  stroke-width: 1.9;
+}
+
+/* Без JS — обе стороны идут подряд, текст читается */
+html:not(.js) .fact {
+  perspective: none;
+}
+
+html:not(.js) .fact__inner {
+  display: block;
+  min-height: 0;
+  transform-style: flat;
+}
+
+html:not(.js) .fact__face {
+  backface-visibility: visible;
+}
+
+html:not(.js) .fact__face--back {
+  transform: none;
+  padding-top: 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+html:not(.js) .fact__face--front {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+html:not(.js) .fact__btn {
+  display: none;
+}
+
+/* ============================================================
+   Карточка-история. Раскрывается в панель поверх страницы —
+   механика .modal из overview.built.css: панель выезжает снизу
+   за 0.8s по cubic-bezier(.65,0,.35,1), подложка гаснет вдвое быстрее.
+   ============================================================ */
+
+.story {
+  position: relative;
+  display: flex;
+  width: var(--story-w);
+  min-height: var(--story-h);
+  border-radius: var(--radius-card-lg);
+  overflow: hidden;
+  transition:
+    background-color var(--dur-overlay) ease,
+    transform var(--dur-hover) var(--ease-card);
+}
+
+.story--dark {
+  background-color: var(--c-card-dark);
+  color: var(--c-text-inv);
+}
+
+/* Карточка-ссылка на страницу кейса — уменьшенная её обложка:
+   лента первых экранов с крупной серединой, под ней заголовок,
+   подзаголовок и теги, всё по центру. */
+.story--case {
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(var(--space-6), 4vw, var(--space-12));
+  padding: var(--card-pad);
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Лента шире карточки и подрезается ею по краям — как на обложке,
+   где она продолжается за экран. Центр совпадает с центром карточки,
+   поэтому крупная карточка стоит ровно посередине. */
+.story__strip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--project-gap);
+  /* Выходим за поля карточки в обе стороны на равную величину */
+  margin-inline: calc(var(--card-pad) * -1);
+}
+
+.story__strip img {
+  flex: 0 0 auto;
+  width: 38%;
+  height: auto;
+  border-radius: var(--radius-card);
+}
+
+/* Середина крупнее — тот же коэффициент, что у ленты на обложке */
+.story__strip .is-focus {
+  width: calc(38% * 1.194);
+}
+
+.story--case .story__face {
+  flex: 0 0 auto;
+  align-items: center;
+  gap: var(--space-4);
+  padding: 0;
+  text-align: center;
+}
+
+.story--case .story__title {
+  max-width: none;
+}
+
+.story__sub {
+  /* Мера подобрана так, чтобы строка ломалась на две, как на обложке,
+     а не оставляла одно слово внизу. */
+  max-width: 41ch;
+  color: var(--c-text-inv-muted);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body-long);
+  letter-spacing: var(--ls-body);
+}
+
+.story__sub b {
+  color: var(--c-text-inv);
+  font-weight: var(--fw-semibold);
+}
+
+.story__sub em {
+  color: var(--c-marker-blue);
+  font-style: normal;
+}
+
+.story__chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-2);
+}
+
+/* Приглушённый тег — как на обложке у даты и названия бренда */
+.chip--muted {
+  background-color: transparent;
+  box-shadow: inset 0 0 0 1px var(--c-hairline-inv);
+  color: var(--c-text-inv-muted);
+}
+
+/* На узкой карточке теги встают в четыре строки и последний упирается
+   в кнопку. Дата и бренд — сведения второстепенные, их и убираем. */
+@media (max-width: 734px) {
+  .story--case .chip--muted {
+    display: none;
+  }
+}
+
+.story--light {
+  background-color: var(--c-white);
+  color: var(--c-text);
+}
+
+.story__face {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: var(--card-pad);
+}
+
+.story__eyebrow {
+  color: var(--c-text-inv);
+}
+
+.story--light .story__eyebrow {
+  color: var(--c-text);
+}
+
+.story__title {
+  margin-top: var(--space-5);
+  max-width: var(--story-title-w);
+}
+
+.story__glyph {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: clamp(96px, 14vw, 200px);
+  font-weight: var(--fw-heavy);
+  line-height: 1;
+  color: var(--c-text-inv-muted);
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+/* Развёрнутый текст живёт в разметке: с JS он источник для панели,
+   без JS — обычный абзац под заголовком */
+.js .story__detail {
+  display: none;
+}
+
+html:not(.js) .story__detail {
+  margin-top: var(--space-6);
+}
+
+html:not(.js) .story {
+  min-height: 0;
+}
+
+/* Кликабельна вся карточка */
+.story__control {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  border-radius: inherit;
+  cursor: pointer;
+}
+
+html:not(.js) .story__control {
+  display: none;
+}
+
+/* .tile-button-wrapper: 44px область нажатия, 36px кнопка внутри */
+.story__btn-wrap {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  z-index: 7;
+  display: flex;
+  width: 44px;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+}
+
+.story__control:focus-visible .story__btn {
+  outline: 2px solid var(--c-focus);
+  outline-offset: 3px;
+}
+
+.story__btn .icon {
+  width: 15px;
+  height: 15px;
+  stroke-width: 1.9;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .story:hover {
+    transform: scale(var(--card-scale));
+  }
+}
+
+.story:active {
+  transform: scale(0.995);
+}
+
+/* ============================================================
+   Панель поверх страницы — .modal
+   ============================================================ */
+
+.modal {
+  --modal-dur: 0.8s;
+  --modal-ease: cubic-bezier(0.65, 0, 0.35, 1);
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-overlay);
+  opacity: 0;
+  visibility: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  transition:
+    opacity calc(var(--modal-dur) / 2) var(--modal-ease),
+    visibility 0s linear var(--modal-dur);
+}
+
+.modal[hidden] {
+  display: none;
+}
+
+.modal[data-open] {
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+.modal__scrim {
+  position: fixed;
+  inset: 0;
+  background-color: var(--c-scrim);
+}
+
+.modal__panel {
+  position: relative;
+  width: min(1400px, 92%);
+  margin: clamp(40px, 6vh, 72px) auto 0;
+  min-height: calc(100dvh - clamp(40px, 6vh, 72px));
+  border-radius: 28px 28px 0 0;
+  background-color: var(--c-card-dark);
+  color: var(--c-text-inv);
+  transform: translateY(100vh);
+  transition: transform var(--modal-dur) var(--modal-ease);
+}
+
+.modal[data-open] .modal__panel {
+  /* none, а не translateY(0): с любым transform панель становится
+     корнем подложки, и backdrop-filter внутри неё размывает пустоту
+     вместо содержимого — стеклянная навигация кейса серела. */
+  transform: none;
+}
+
+.modal[data-theme='light'] .modal__panel {
+  background-color: var(--c-white);
+  color: var(--c-text);
+}
+
+.modal__inner {
+  padding: clamp(var(--space-8), 5vw, 88px);
+}
+
+/* Режим отдельной страницы: панель отдаёт всю ширину содержимому,
+   своих полей не добавляет — страница кейса верстает себя сама. */
+.modal[data-page] .modal__panel {
+  width: min(1680px, 96%);
+  /* clip, а не hidden: скругление углов нужно, а вот прокручиваемым
+     боксом панель становиться не должна — иначе липкая навигация
+     кейса цепляется за неё вместо окна и уезжает вместе с контентом. */
+  overflow: clip;
+}
+
+.modal__page[data-loading] {
+  min-height: 60vh;
+}
+
+/* Крестик над содержимым страницы: у неё своя липкая навигация */
+.modal[data-page] .modal__close {
+  position: fixed;
+  top: clamp(16px, 3vh, 28px);
+  right: clamp(16px, 3vw, 40px);
+  z-index: 70; /* выше липкой навигации кейса (z-index: 60) */
+}
+
+.modal__eyebrow {
+  color: var(--c-text-inv-muted);
+}
+
+.modal[data-theme='light'] .modal__eyebrow {
+  color: var(--c-text-muted);
+}
+
+.modal__title {
+  margin-top: var(--space-4);
+  max-width: 20ch;
+}
+
+/* Текст оверлея. Ширина ограничена по строке, а не по панели:
+   на 1400px абзац во всю ширину нечитаем. Плашки под текстом нет —
+   иначе короткий абзац выглядит пустой коробкой. */
+.modal__surface {
+  margin-top: clamp(var(--space-8), 4vw, 56px);
+  max-width: 62ch;
+  color: var(--c-text-inv-muted);
+}
+
+.modal[data-theme='light'] .modal__surface {
+  color: var(--c-text-muted);
+}
+
+.modal__surface > * + * {
+  margin-top: var(--space-5);
+}
+
+/* Кнопка закрытия — .ric-modal-close-icon */
+.modal__close {
+  position: absolute;
+  top: 28px;
+  right: 28px;
+  z-index: 2;
+  display: flex;
+  width: 44px;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal__close-icon {
+  display: flex;
+  width: 36px;
+  height: 36px;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-round);
+  background-color: var(--tile-btn-bg);
+  color: var(--tile-btn-icon);
+  transition:
+    background-color var(--dur-instant) linear,
+    color var(--dur-instant) linear;
+}
+
+.modal[data-theme='light'] .modal__close-icon {
+  background-color: var(--tile-btn-bg-inv);
+  color: var(--tile-btn-icon-inv);
+}
+
+.modal__close:active .modal__close-icon {
+  background-color: var(--tile-btn-bg-active);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .modal__close:hover .modal__close-icon {
+    background-color: var(--tile-btn-bg-hover);
+  }
+
+  .modal[data-theme='light'] .modal__close:hover .modal__close-icon {
+    background-color: var(--tile-btn-bg-inv-hover);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modal__panel {
+    transform: none;
+  }
+}
+
+/* ============================================================
+   Карточка проекта Behance — внешняя ссылка
+   ============================================================ */
+
+.project {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* Ширина задана карточке-элементу карусели, а не её содержимому:
+   у флекс-элемента с flex-basis auto процент внутри считать не от чего,
+   и он схлопывался к натуральной ширине картинки. */
+.section--behance .carousel__item {
+  width: min(var(--project-w), 100%);
+}
+
+.section--behance .carousel__track {
+  gap: var(--project-gap);
+}
+
+.project__cover {
+  position: relative;
+  border-radius: var(--radius-card-lg);
+  overflow: hidden;
+  background-color: var(--c-surface-dark);
+  transition: transform var(--dur-hover) var(--ease-card);
+}
+
+.project__cover img {
+  width: 100%;
+  aspect-ratio: 50 / 27;
+  object-fit: cover;
+}
+
+.project__chip {
+  position: absolute;
+  top: var(--space-4);
+  left: var(--space-4);
+}
+
+.project__body {
+  padding-top: var(--space-5);
+  max-width: 720px;
+  color: var(--c-text-inv-muted);
+}
+
+.project__name {
+  color: var(--c-text-inv);
+  font-weight: var(--fw-semibold);
+}
+
+.project__link {
+  margin-top: var(--space-6);
+  color: var(--c-text-inv);
+}
+
+/* Кликабельна вся карточка */
+.project__link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .project:hover .project__cover {
+    transform: scale(var(--card-scale));
+  }
+
+  .project:hover .project__link .icon {
+    transform: translateX(3px);
+  }
+}
+
+.project:active .project__cover {
+  transform: scale(0.995);
+}
+
+.project__link:active .icon {
+  transform: translateX(1px);
+}
+
+/* ============================================================
+   Аккордеон FAQ
+   ============================================================ */
+
+.faq > li + li {
+  border-top: 1px solid var(--c-hairline);
+}
+
+.qa__q {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-5);
+  padding-block: 29px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.qa__q::-webkit-details-marker {
+  display: none;
+}
+
+.qa__label {
+  font-weight: var(--fw-heavy);
+  font-variation-settings: 'wght' 700;
+  transition: opacity var(--dur-base) ease;
+}
+
+.qa__chevron {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  flex: 0 0 auto;
+  color: #86868b;
+}
+
+.qa__chevron svg {
+  width: 30px;
+  height: 30px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* .accordion-tray: transition: height ease-in-out, длительность
+   --accordion-transition-duration: 400ms. У Apple раскрытие и закрытие
+   идут одинаково; прежняя разнонаправленная схема (открытие дольше
+   закрытия) была моей и заменена на оригинальную. */
+.qa__body {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows var(--dur-accordion) ease-in-out;
+}
+
+.qa:not([open]) .qa__body,
+.qa[data-closing] .qa__body {
+  grid-template-rows: 0fr;
+}
+
+.qa__body > * {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.qa__inner {
+  padding-bottom: var(--space-6);
+  color: var(--c-text-muted);
+  opacity: 1;
+  transition: opacity var(--dur-accordion) ease-in-out;
+}
+
+.qa:not([open]) .qa__inner,
+.qa[data-closing] .qa__inner {
+  opacity: 0;
+}
+
+.qa__chevron {
+  transition: transform var(--dur-base) var(--ease-main);
+}
+
+.qa[open]:not([data-closing]) .qa__chevron {
+  transform: rotate(180deg);
+}
+
+.qa__q:active .qa__label {
+  opacity: 0.55;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .qa__q:hover .qa__label {
+    opacity: 0.62;
+  }
+}
+
+/* ============================================================
+   Кнопка-плашка футера
+   ============================================================ */
+
+.ctl {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-6);
+  height: 80px;
+  transition:
+    background-color var(--dur-base) var(--ease-main),
+    transform var(--dur-press) var(--ease-main);
+  padding-inline: 23px;
+  border-radius: var(--radius-button);
+  background-color: var(--c-footer-btn);
+  color: var(--c-text-inv);
+}
+
+.ctl__label {
+  font-size: var(--fs-ctl);
+  letter-spacing: -0.015em;
+}
+
+.ctl__icon {
+  color: var(--c-text-inv);
+  width: 20px;
+  height: 20px;
+  stroke-width: 1.6;
+  transition: transform var(--dur-base) var(--ease-main);
+}
+
+.ctl:active {
+  transform: scale(0.985);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .ctl:hover {
+    background-color: #202020;
+  }
+
+  .ctl:hover .ctl__icon {
+    transform: translateX(3px);
+  }
+
+  .ctl--file:hover .ctl__icon {
+    transform: translateY(3px);
+  }
+}
+
+/* ============================================================
+   Буквы заголовков
+
+   Заголовок разбирается на буквы: каждая влетает крупнее, повёрнутой
+   и цветной, перебирая символы, потом садится в нормальный размер
+   и обычный цвет. При наведении то же повторяет одна буква.
+
+   Разброс размера, наклона и цвета задаёт JS через переменные — он же
+   считает их от номера буквы, а не случайно, чтобы картинка была
+   одинаковой при каждой загрузке.
+
+   В кадрах нет ни одного `to`: без него браузер доводит анимацию до
+   собственных значений элемента. Поэтому не приходится дублировать
+   в CSS ни цвет заголовка, ни `transform: none` — а один и тот же
+   набор кадров работает и на светлом заголовке, и на тёмном.
+   ============================================================ */
+
+@keyframes letter-in {
+  from {
+    opacity: 0;
+    color: var(--letter-color);
+    transform: translate3d(0, var(--letter-rise), 0)
+      scale(var(--letter-scale)) rotate(var(--letter-tilt));
+  }
+
+  /* Прозрачность набирается быстро, цвет и размер садятся дольше.
+     Иначе буква почти всю анимацию полупрозрачная и цвет выглядит
+     грязным, а не ярким. */
+  25% {
+    opacity: 1;
+  }
+
+  /* Цвет держится до середины и только потом уходит в обычный. Без этой
+     ступени он размазан по всей анимации, и акцент выцветает раньше,
+     чем его успеваешь заметить. */
+  55% {
+    color: var(--letter-color);
+  }
+}
+
+/* Те же кадры под другим именем. Смена animation-name перезапускает
+   анимацию — иначе повторное наведение на ту же букву ничего бы
+   не дало, имя-то не изменилось. */
+@keyframes letter-bounce {
+  from {
+    color: var(--letter-color);
+    transform: translate3d(0, var(--letter-rise), 0)
+      scale(var(--letter-scale)) rotate(var(--letter-tilt));
+  }
+
+  55% {
+    color: var(--letter-color);
+  }
+}
+
+/* До запуска заголовок спрятан целиком — это .pre-animation из
+   overview.built.css. Иначе буквы успевали бы отыграть, пока блок
+   ещё за экраном. */
+[data-letters]:not([data-letters-play]) {
+  visibility: hidden;
+}
+
+/* Слово не переносится по буквам: каждая буква — inline-block,
+   и без запрета строка рвалась бы посреди слова. */
+.letters__word {
+  white-space: nowrap;
+}
+
+.letters__letter {
+  position: relative;
+  display: inline-block;
+}
+
+[data-letters-play] .letters__letter {
+  animation: letter-in var(--dur-letter) var(--ease-back) both;
+  animation-delay: calc(var(--letter-index) * var(--letter-stagger));
+}
+
+/* Перебор символов.
+   Настоящая буква не подменяется, а прячется через visibility — её бокс
+   остаётся на месте и держит ширину. Перебираемый знак висит поверх по
+   центру, вне потока. Поэтому строка не дёргается, какой бы ширины ни
+   оказался очередной знак: у «!» и «Ж» в Inter она отличается втрое.
+   Цвет знак наследует от буквы, то есть переливается вместе с ней. */
+.letters__letter[data-scrambling] .letters__glyph {
+  visibility: hidden;
+}
+
+.letters__letter[data-scrambling]::after {
+  content: attr(data-glyph);
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.letters__letter[data-bounce] {
+  animation-name: letter-bounce;
+  animation-delay: 0s;
+}
+
+/* Маркер за словом («Факты.», «вопросы?») заезжает вместе со своими
+   буквами. Без этого его подложка нарисована с самого начала, а буквы
+   на ней ещё не пришли — и посреди каскада висит пустая цветная плашка.
+   Номер первой буквы маркера проставляет JS. */
+@keyframes marker-in {
+  from {
+    background-size: 0 0.86em;
+  }
+}
+
+[data-letters-play] .marker {
+  animation: marker-in var(--dur-letter) var(--ease-main) both;
+  animation-delay: calc(var(--letter-index) * var(--letter-stagger));
+}
+
+/* Отыгравшая буква больше не анимируется. Без этого снятие data-bounce
+   возвращало letter-in вместе с его задержкой, а при fill-mode: both
+   буква на время задержки берёт первый кадр — то есть пропадала
+   и появлялась заново. Атрибут ставит JS по концу анимации. */
+.letters__letter[data-settled]:not([data-bounce]) {
+  animation: none;
+}
+
+/* На светлом фоне нужны плотные оттенки: исходные подобраны к чёрному
+   и на #f5f5f7 почти не видны. */
+.section--light [data-letters],
+.section--white [data-letters] {
+  --c-letter-0: var(--c-letter-dark-0);
+  --c-letter-1: var(--c-letter-dark-1);
+  --c-letter-2: var(--c-letter-dark-2);
+  --c-letter-3: var(--c-letter-dark-3);
+  --c-letter-4: var(--c-letter-dark-4);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Буквы не разбираются вовсе — модуль выходит раньше, — но правила
+     нужны на случай, если настройку сменили уже после загрузки. */
+  [data-letters] {
+    visibility: visible;
+  }
+
+  .letters__letter {
+    animation: none;
+  }
+}
