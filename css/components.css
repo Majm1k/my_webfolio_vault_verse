@@ -399,94 +399,39 @@ html:not(.js) .fact__btn {
   color: var(--c-text-inv);
 }
 
-/* Карточка-ссылка на страницу кейса — уменьшенная её обложка:
-   лента первых экранов с крупной серединой, под ней заголовок,
-   подзаголовок и теги, всё по центру. */
+/* Карточка-ссылка на страницу кейса: заголовок и сетка из двенадцати
+   лендингов — тех самых, что кейс и разбирает. */
 .story--case {
   flex-direction: column;
-  justify-content: center;
-  gap: clamp(var(--space-6), 4vw, var(--space-12));
+  gap: var(--space-8);
   padding: var(--card-pad);
   text-decoration: none;
   color: inherit;
 }
 
-/* Лента шире карточки и подрезается ею по краям — как на обложке,
-   где она продолжается за экран. Центр совпадает с центром карточки,
-   поэтому крупная карточка стоит ровно посередине. */
-.story__strip {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--project-gap);
-  /* Выходим за поля карточки в обе стороны на равную величину */
-  margin-inline: calc(var(--card-pad) * -1);
-}
-
-.story__strip img {
-  flex: 0 0 auto;
-  width: 38%;
-  height: auto;
-  border-radius: var(--radius-card);
-}
-
-/* Середина крупнее — тот же коэффициент, что у ленты на обложке */
-.story__strip .is-focus {
-  width: calc(38% * 1.194);
-}
-
 .story--case .story__face {
   flex: 0 0 auto;
-  align-items: center;
-  gap: var(--space-4);
   padding: 0;
-  text-align: center;
 }
 
 .story--case .story__title {
   max-width: none;
 }
 
-.story__sub {
-  /* Мера подобрана так, чтобы строка ломалась на две, как на обложке,
-     а не оставляла одно слово внизу. */
-  max-width: 41ch;
-  color: var(--c-text-inv-muted);
-  font-size: var(--fs-body);
-  line-height: var(--lh-body-long);
-  letter-spacing: var(--ls-body);
+.story__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--project-gap);
 }
 
-.story__sub b {
-  color: var(--c-text-inv);
-  font-weight: var(--fw-semibold);
-}
-
-.story__sub em {
-  color: var(--c-marker-blue);
-  font-style: normal;
-}
-
-.story__chips {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: var(--space-2);
-}
-
-/* Приглушённый тег — как на обложке у даты и названия бренда */
-.chip--muted {
-  background-color: transparent;
-  box-shadow: inset 0 0 0 1px var(--c-hairline-inv);
-  color: var(--c-text-inv-muted);
-}
-
-/* На узкой карточке теги встают в четыре строки и последний упирается
-   в кнопку. Дата и бренд — сведения второстепенные, их и убираем. */
-@media (max-width: 734px) {
-  .story--case .chip--muted {
-    display: none;
-  }
+.story__grid img {
+  width: 100%;
+  height: auto;
+  /* Пропорция одна на все обложки: исходники отличаются на три пикселя,
+     и без неё нижний ряд вставал бы ступенькой. */
+  aspect-ratio: 760 / 534;
+  object-fit: cover;
+  border-radius: var(--radius-shot);
 }
 
 .story--light {
@@ -504,6 +449,7 @@ html:not(.js) .fact__btn {
 }
 
 .story__eyebrow {
+  display: block;
   color: var(--c-text-inv);
 }
 
@@ -512,6 +458,7 @@ html:not(.js) .fact__btn {
 }
 
 .story__title {
+  display: block;
   margin-top: var(--space-5);
   max-width: var(--story-title-w);
 }
@@ -667,11 +614,15 @@ html:not(.js) .story__control {
   min-height: 60vh;
 }
 
-/* Крестик над содержимым страницы: у неё своя липкая навигация */
+/* Крестик держится за панель, а не за окно: fixed уводил бы его за
+   правый край карточки на широких экранах, где панель уже окна.
+   Липкий — потому что страница кейса длинная, а отрицательное нижнее
+   поле снимает его высоту с потока: кейс начинается от верха панели. */
 .modal[data-page] .modal__close {
-  position: fixed;
-  top: clamp(16px, 3vh, 28px);
-  right: clamp(16px, 3vw, 40px);
+  position: sticky;
+  top: 4px;
+  right: auto;
+  margin: 0 clamp(12px, 1.5vw, 24px) -44px auto;
   z-index: 70; /* выше липкой навигации кейса (z-index: 60) */
 }
 

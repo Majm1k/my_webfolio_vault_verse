@@ -201,6 +201,7 @@
   --radius-card: 26px;
   --radius-card-lg: 26px;
   --radius-chip: 7px;
+  --radius-shot: 6px;       /* обложки лендингов в превью кейса */
   --radius-button: 16px;
   --radius-marker: 0px;
   --radius-round: 50%;
