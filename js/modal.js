@@ -97,6 +97,7 @@ function open(card, trigger) {
   elBody.innerHTML = detail ? detail.innerHTML : '';
   modal.dataset.theme = card.dataset.theme || 'dark';
   modal.removeAttribute('data-page');
+  modal.removeAttribute('data-sheet');
   elPage.hidden = true;
   modal.querySelector('.modal__inner').hidden = false;
   panel.removeAttribute('aria-label');
@@ -129,6 +130,7 @@ function runScripts(host) {
 async function openPage(url, trigger) {
   modal.dataset.theme = 'dark';
   modal.setAttribute('data-page', '');
+  modal.removeAttribute('data-sheet');
   modal.querySelector('.modal__inner').hidden = true;
   elPage.hidden = false;
   // Заголовок панели в этом режиме берём с карточки прямо в aria-label:
@@ -146,6 +148,32 @@ async function openPage(url, trigger) {
 
   elPage.replaceChildren(...[...loaded.body.childNodes].map((node) => node.cloneNode(true)));
   runScripts(elPage);
+  show(trigger);
+}
+
+/* ------------------------------------------------------------------
+   Разбор-плакат внутри панели
+
+   Макет кейса — одна длинная страница. Её визуальная часть идёт лентой
+   картинок: встроенный просмотрщик PDF есть не во всех браузерах, а
+   картинки рисуются везде и весят втрое меньше самого файла. Текстовая
+   часть набрана разметкой и лежит в том же шаблоне.
+   ------------------------------------------------------------------ */
+
+function openSheet(trigger) {
+  const source = document.getElementById(trigger.dataset.cardSheet);
+  if (!source) throw new Error(`нет шаблона #${trigger.dataset.cardSheet}`);
+  const title = trigger.querySelector('.story__title')?.textContent.trim() || 'Разбор';
+
+  modal.dataset.theme = 'dark';
+  modal.setAttribute('data-page', '');
+  modal.setAttribute('data-sheet', '');
+  modal.querySelector('.modal__inner').hidden = true;
+  elPage.hidden = false;
+  panel.removeAttribute('aria-labelledby');
+  panel.setAttribute('aria-label', title);
+
+  elPage.replaceChildren(source.content.cloneNode(true));
   show(trigger);
 }
 
@@ -189,6 +217,20 @@ export function initModal(root = document) {
     const trigger = card.querySelector('[data-card-open]');
     if (!trigger) return;
     trigger.addEventListener('click', () => open(card, trigger));
+  });
+
+  // Карточка с разбором: без JS браузер откроет PDF по ссылке, с JS
+  // разбор ложится панелью поверх сайта — как и страница кейса.
+  root.querySelectorAll('[data-card-sheet]').forEach((link) => {
+    link.addEventListener('click', (event) => {
+      if (event.metaKey || event.ctrlKey || event.shiftKey || event.button !== 0) return;
+      event.preventDefault();
+      try {
+        openSheet(link);
+      } catch (error) {
+        window.location.href = link.href;
+      }
+    });
   });
 
   // Карточка остаётся ссылкой на страницу: без JS она туда и уводит,

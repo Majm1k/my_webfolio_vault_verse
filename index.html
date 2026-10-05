@@ -306,26 +306,26 @@
       </li>
 
       <li class="carousel__item" data-reveal>
-        <article class="story story--light" data-card data-theme="light">
-          <div class="story__face">
-            <p class="t-eyebrow story__eyebrow">NEOLINE</p>
-            <h3 class="t-card-lg story__title">Дизайн-система интерфейса</h3>
-          </div>
+        <!-- Карточка-ссылка на разбор в PDF: без скриптов браузер
+             откроет файл сам, со скриптами он ложится панелью поверх
+             сайта. Обложка — первый экран макета, текст поверх неё. -->
+        <a class="story story--dark story--cover" href="files/neo-app.pdf"
+           data-card-sheet="neo-app-sheet"
+           aria-haspopup="dialog" aria-controls="case-modal">
+          <img class="story__cover" src="img/story/mvp-neo-app.webp"
+               width="1400" height="1229" alt="" loading="lazy" decoding="async">
 
-          <div class="story__detail" id="story-2" data-card-detail>
-            <p class="t-body-long">[НУЖНО] Развёрнутый текст оверлея для карточки «Дизайн-система интерфейса».</p>
-          </div>
+          <span class="story__face">
+            <span class="t-eyebrow story__eyebrow">NEOLINE</span>
+            <span class="t-card-lg story__title">Разработка MVP приложения</span>
+          </span>
 
-          <button class="story__control" type="button" data-card-open
-                  aria-haspopup="dialog" aria-controls="story-2">
-            <span class="visually-hidden">Подробнее: Дизайн-система интерфейса</span>
-            <span class="story__btn-wrap" aria-hidden="true">
-              <span class="icon-btn icon-btn--solid-inv story__btn">
-                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
-              </span>
+          <span class="story__btn-wrap" aria-hidden="true">
+            <span class="icon-btn icon-btn--solid story__btn">
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
             </span>
-          </button>
-        </article>
+          </span>
+        </a>
       </li>
 
       <li class="carousel__item" data-reveal>
@@ -614,6 +614,100 @@
   </div>
 </footer>
 
+<!-- Разбор MVP: длинная страница макета, нарезанная на куски.
+     Панель собирает их в одно полотно, сам PDF лежит в files/. -->
+<template id="neo-app-sheet">
+  <img class="modal__sheet" src="img/neo-app/01.webp" width="2294" height="1505"
+       alt="" loading="eager" decoding="async">
+  <img class="modal__sheet" src="img/neo-app/02.webp" width="2294" height="1505"
+       alt="" loading="lazy" decoding="async">
+  <img class="modal__sheet" src="img/neo-app/03.webp" width="2294" height="1505"
+       alt="" loading="lazy" decoding="async">
+  <img class="modal__sheet" src="img/neo-app/04.webp" width="2294" height="1505"
+       alt="" loading="lazy" decoding="async">
+  <img class="modal__sheet" src="img/neo-app/05.webp" width="2294" height="1505"
+       alt="" loading="lazy" decoding="async">
+  <img class="modal__sheet" src="img/neo-app/06.webp" width="2294" height="1505"
+       alt="" loading="lazy" decoding="async">
+
+  <!-- Текстовая часть макета набрана разметкой, а не картинкой:
+       так она читается с экрана любого размера и ищется поиском. -->
+  <section class="sheet">
+    <div class="sheet__inner">
+      <h2 class="t-h2 sheet__title">Приложение для управления автомобильными устройствами</h2>
+      <p class="t-eyebrow sheet__eyebrow">Описание визуальной концепции</p>
+
+      <dl class="sheet__defs">
+        <div class="sheet__def">
+          <dt class="t-card sheet__term">Ключевая идея</dt>
+          <dd class="t-body-long sheet__text">Единый цифровой центр управления автомобильной
+            системой безопасности. Основой становится Dark First UI, карточная архитектура,
+            точечный синий акцент и ощущения физического устройства внутри цифрового
+            пространства, отсылающая к NEO UI.</dd>
+        </div>
+        <div class="sheet__def">
+          <dt class="t-card sheet__term">Визуальная философия</dt>
+          <dd class="t-body-long sheet__text">Дизайн должен восприниматься как
+            companion-приложение для автомобиля, совмещённое с цифровой приборной
+            панелью автомобиля.</dd>
+        </div>
+        <div class="sheet__def">
+          <dt class="t-card sheet__term">Визуальный характер</dt>
+          <dd class="sheet__text">
+            <ul class="t-body-long sheet__points">
+              <li><b>Технологичность</b> — интерфейс показывает сложные данные простыми
+                визуальными блоками.</li>
+              <li><b>Премиальность</b> — много воздуха, аккуратная типографика, качественные
+                рендеры устройств и сдержанная палитра.</li>
+              <li><b>Контроль</b> — каждое важное состояние считывается за секунду,
+                а основное действие очевидно.</li>
+            </ul>
+          </dd>
+        </div>
+        <div class="sheet__def">
+          <dt class="t-card sheet__term">Правило акцента</dt>
+          <dd class="t-body-long sheet__text">Синий не должен использоваться повсеместно.
+            Он появляется там, где система хочет сказать пользователю: «это сейчас важно».</dd>
+        </div>
+        <div class="sheet__def">
+          <dt class="t-card sheet__term">Карточная архитектура</dt>
+          <dd class="t-body-long sheet__text">Базовый строительный элемент продукта. Каждый
+            самостоятельный объект получает собственную поверхность: одинаковые внутренние
+            отступы, единая система скруглений, одинаковая логика заголовка и метаданных.
+            Это позволяет добавлять новые типы устройств и функций без визуального разрыва.</dd>
+        </div>
+      </dl>
+
+      <p class="sheet__rule">
+        <span class="t-eyebrow sheet__eyebrow">Главный принцип</span>
+        <span class="t-intro sheet__principle">Не перегружать интерфейс «технологичностью».</span>
+      </p>
+
+      <h3 class="t-h3 sheet__sub">Итоговый визуальный образ интерфейса должен находиться
+        на пересечении нескольких эстетик.</h3>
+
+      <table class="sheet__table">
+        <thead>
+          <tr>
+            <th class="t-eyebrow" scope="col">Источник</th>
+            <th class="t-eyebrow" scope="col">Что берём</th>
+          </tr>
+        </thead>
+        <tbody class="t-body-long">
+          <tr><th scope="row">iOS</th><td>Чистоту, иерархию, плавность</td></tr>
+          <tr><th scope="row">Автомобильная приборная панель</th><td>Крупные показатели, статусность, функциональность</td></tr>
+          <tr><th scope="row">Профессиональное оборудование</th><td>Точность, информацию, контроль</td></tr>
+          <tr><th scope="row">Media center</th><td>Видео, timeline, карты, контентные карточки</td></tr>
+        </tbody>
+      </table>
+
+      <p class="t-intro sheet__outro">Всё это позволит сохранить характер уже представленного
+        интерфейса и при этом превратить его в единую масштабируемую дизайн-систему
+        для всей экосистемы устройств.</p>
+    </div>
+  </section>
+</template>
+
 <!-- Панель поверх страницы для блока «Больше, чем просто факты» -->
 <div class="modal" id="case-modal" data-modal hidden>
   <div class="modal__scrim" data-modal-scrim></div>
@@ -629,8 +723,8 @@
       <h2 class="t-h2 modal__title" id="modal-title" data-modal-title></h2>
       <div class="modal__surface t-body-long" data-modal-body></div>
     </div>
-    <!-- Сюда грузится отдельная страница кейса: панель в этом режиме
-         без полей, страница занимает её целиком. -->
+    <!-- Сюда грузится отдельная страница кейса или просмотрщик PDF:
+         панель в этом режиме без полей, содержимое занимает её целиком. -->
     <div class="modal__page" data-modal-page hidden></div>
   </div>
 </div>
